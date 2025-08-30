@@ -83,18 +83,32 @@ export async function fetchLatestPosts(username, limit = 10, days = 7, returnOnl
       }
     }
 
+    console.log(`Total unique posts found: ${results.length}`);
+    if (!results.length) {
+      console.log(`No posts found for ${username}`);
+      return [];
+    }
+
     // filter by date & format URLs
     const cutoff = Date.now() - days * 24 * 3600 * 1000;
     const recent = results.filter(i => new Date(i.date).getTime() >= cutoff);
+    console.log(`Posts within the last ${days} days: ${recent.length}`);
+    if (!recent.length) {
+      console.log(`No recent posts found for ${username}`);
+      return [];
+    }
+
     const regex = new RegExp(`^https://x\\.com/${username}/status/\\d+$`);
     const finalUrls = Array.from(new Set(recent.map(i => i.url)))
       .filter(u => regex.test(u))
       .slice(0, limit);
 
+    console.log(`Final URLs to return (limit ${limit}):`, finalUrls);
     if (!finalUrls.length) {
       console.log(`No posts found for ${username}`);
       return [];
     }
+    
     return finalUrls;
   } catch (error) {
     console.error("❌ Error fetching posts:", error);
