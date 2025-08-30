@@ -98,7 +98,7 @@ export async function fetchLatestPosts(username, limit = 10, days = 7, returnOnl
       return [];
     }
 
-    const regex = new RegExp(`^https://x\\.com/${username}/status/\\d+$`);
+    const regex = new RegExp(`^https://x\\.com/${username}/status/\\d+$`, "i");
     const finalUrls = Array.from(new Set(recent.map(i => i.url)))
       .filter(u => regex.test(u))
       .slice(0, limit);
@@ -108,7 +108,7 @@ export async function fetchLatestPosts(username, limit = 10, days = 7, returnOnl
       console.log(`No posts found for ${username}`);
       return [];
     }
-    
+
     return finalUrls;
   } catch (error) {
     console.error("❌ Error fetching posts:", error);
