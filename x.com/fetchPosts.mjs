@@ -55,14 +55,13 @@ export async function fetchLatestPosts(username, limit = 10, days = 7, returnOnl
             const text = a.querySelector("div[lang]")?.textContent?.trim();
             const img = a.querySelector("img[alt='Image']");
             if(returnOnlyWithImage && !img) return null; // skip if no image is present
-            console.log(`Found article - link: ${link}, date: ${date}, hasImage: ${!!img}`);
             return link && date ? { url: link, date, text } : null;
           })
           .filter(Boolean),
           returnOnlyWithImage
       );
 
-      console.log(`Found ${itemsRaw.length} posts in this scroll`);
+      console.log(`Found ${itemsRaw.length} posts in this scroll, links: ${itemsRaw.map(i => i.url).join(", ")}`);      
 
       const newItems = [];
       for (const item of itemsRaw) {
