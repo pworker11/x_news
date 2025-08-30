@@ -16,6 +16,7 @@ export async function fetchLatestPosts(username, limit = 10, days = 7, returnOnl
       const [name, value] = cookie.split("=");
       return { name, value, domain: ".x.com", path: "/", secure: true };
     });
+    console.log(`Loaded ${cookies.length} cookies`);
 
     browser = await firefox.launch({ headless: true });
     const context = await browser.newContext();
@@ -25,6 +26,11 @@ export async function fetchLatestPosts(username, limit = 10, days = 7, returnOnl
     await page.goto(`https://x.com/${username}`, { timeout: 60000 });
     console.log("Waiting for page to load...");
     await page.waitForTimeout(15000);
+    // make sure we are logged in by checking for the profile icon
+    const isLoggedIn = await page.$('a[href="/home"]');
+    if (!isLoggedIn) {
+      console.log("Not logged in - please check your cookies");
+    }
     console.log("waiting for article elements to appear...");
     try {
       await page.waitForSelector("article", { timeout: 30000 });
